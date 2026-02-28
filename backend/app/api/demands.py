@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.api import deps
@@ -6,12 +6,14 @@ from app.schemas import demand as demand_schema
 from app.models import demand as demand_model
 from app.models.user import UserType
 from app.database import get_db
+from app.tasks import find_matches_for_demand_task
 
 router = APIRouter()
 
 @router.post("/", response_model=demand_schema.DemandResponse)
 def create_demand(
     demand: demand_schema.DemandCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: deps.User = Depends(deps.get_current_active_user)
 ):
@@ -23,9 +25,8 @@ def create_demand(
     db.commit()
     db.refresh(db_demand)
     
-    # Trigger matching
-    from app.services import matching
-    matching.find_matches_for_demand(db, db_demand)
+    # Trigger matching in background
+    background_tasks.add_task(find_matches_for_demand_task, db_demand.id)
     
     return db_demand
 

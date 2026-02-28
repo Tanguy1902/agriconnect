@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from app.api import deps
@@ -14,6 +14,7 @@ router = APIRouter()
 @router.post("/", response_model=dp_schema.DirectPurchaseResponse)
 def create_direct_purchase(
     purchase: dp_schema.DirectPurchaseCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: deps.User = Depends(deps.get_current_active_user)
 ):
@@ -30,17 +31,13 @@ def create_direct_purchase(
         collector_id=current_user.id
     )
     db.add(db_purchase)
-    
-    # Create notification for the farmer using the service (triggers SMS)
-    notify_user(
-        db, 
-        offer.farmer, 
-        f"Un collecteur a effectué un achat direct pour votre offre de {offer.product.name} ({purchase.quantity} {offer.product.unit})",
-        "info"
-    )
-    
     db.commit()
     db.refresh(db_purchase)
+    
+    # Send notification in background
+    from app.tasks import send_notification_task
+    message = f"Un collecteur a effectué un achat direct pour votre offre de {offer.product.name} ({purchase.quantity} {offer.product.unit})"
+    background_tasks.add_task(send_notification_task, offer.farmer.id, message)
     
     return db_purchase
 

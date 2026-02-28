@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from app.api import deps
@@ -6,6 +6,7 @@ from app.models import match as match_model
 from app.models.user import UserType
 from app.database import get_db
 from app.services.notification import notify_user
+from app.tasks import send_notification_task
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -120,6 +121,7 @@ def read_my_matches(
 def update_match_status(
     match_id: int,
     status_update: MatchStatusUpdate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: deps.User = Depends(deps.get_current_active_user)
 ):
@@ -144,10 +146,12 @@ def update_match_status(
     # Update status
     if status_update.status == "accepted":
         match.status = match_model.MatchStatus.ACCEPTED
-        notify_user(db, other_user, f"{current_user.full_name} a accepté votre match pour {match.offer.product.name}!", "success")
+        msg = f"{current_user.full_name} a accepté votre match pour {match.offer.product.name}!"
+        background_tasks.add_task(send_notification_task, other_user.id, msg, "success")
     elif status_update.status == "rejected":
         match.status = match_model.MatchStatus.REJECTED
-        notify_user(db, other_user, f"{current_user.full_name} a décliné le match pour {match.offer.product.name}.", "info")
+        msg = f"{current_user.full_name} a décliné le match pour {match.offer.product.name}."
+        background_tasks.add_task(send_notification_task, other_user.id, msg, "info")
     else:
         raise HTTPException(status_code=400, detail="Invalid status")
         
@@ -157,6 +161,7 @@ def update_match_status(
 @router.post("/{match_id}/accept")
 def accept_match(
     match_id: int,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: deps.User = Depends(deps.get_current_active_user)
 ):
@@ -178,13 +183,15 @@ def accept_match(
         raise HTTPException(status_code=403, detail="Not authorized")
         
     match.status = match_model.MatchStatus.ACCEPTED
-    notify_user(db, other_user, f"{current_user.full_name} a accepté votre match pour {match.offer.product.name}!", "success")
+    msg = f"{current_user.full_name} a accepté votre match pour {match.offer.product.name}!"
+    background_tasks.add_task(send_notification_task, other_user.id, msg, "success")
     db.commit()
     return {"status": "accepted"}
 
 @router.post("/{match_id}/reject")
 def reject_match(
     match_id: int,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: deps.User = Depends(deps.get_current_active_user)
 ):
@@ -206,6 +213,7 @@ def reject_match(
         raise HTTPException(status_code=403, detail="Not authorized")
         
     match.status = match_model.MatchStatus.REJECTED
-    notify_user(db, other_user, f"{current_user.full_name} a décliné le match pour {match.offer.product.name}.", "info")
+    msg = f"{current_user.full_name} a décliné le match pour {match.offer.product.name}."
+    background_tasks.add_task(send_notification_task, other_user.id, msg, "info")
     db.commit()
     return {"status": "rejected"}

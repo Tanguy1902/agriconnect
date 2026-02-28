@@ -23,7 +23,7 @@ def notify_user(
         is_read=False
     )
     db.add(notification)
-    db.commit()
+    # db.commit() removed to avoid side-effects in background tasks/transactions
 
     print(
         f"NOTIFICATION created for {user.email} ({user.full_name}): {message}"

@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile, Form
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile, Form, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.api import deps
 from app.schemas import offer as offer_schema
 from app.models import offer as offer_model
+from app.tasks import find_matches_for_offer_task
 from app.models.user import UserType
 from app.database import get_db
 import shutil
@@ -21,6 +22,7 @@ def create_offer(
     location_region: Optional[str] = Form(None),
     location_commune: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None),
+    background_tasks: BackgroundTasks = None,
     db: Session = Depends(get_db),
     current_user: deps.User = Depends(deps.get_current_active_user)
 ):
@@ -67,9 +69,9 @@ def create_offer(
     db.commit()
     db.refresh(db_offer)
     
-    # Trigger matching
-    from app.services import matching
-    matching.find_matches_for_offer(db, db_offer)
+    # Trigger matching in background
+    if background_tasks:
+        background_tasks.add_task(find_matches_for_offer_task, db_offer.id)
     
     return db_offer
 

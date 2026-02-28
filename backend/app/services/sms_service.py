@@ -65,7 +65,7 @@ class SMSService:
         }
 
         try:
-            response = requests.post(SMSService.BASE_URL, json=payload)
+            response = requests.post(SMSService.BASE_URL, json=payload, timeout=10)
             response_data = response.json()
 
             if (
