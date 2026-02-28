@@ -1,0 +1,141 @@
+{
+  "landing": {
+    "title": "AgriConnect",
+    "subtitle": "Connectez agriculteurs et collecteurs à Madagascar",
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "features": {
+      "title": "Fonctionnalités",
+      "matching": "Matching Intelligent",
+      "matchingDesc": "Trouvez automatiquement les meilleures opportunités",
+      "chat": "Chat en Temps Réel",
+      "chatDesc": "Communiquez directement avec vos partenaires",
+      "secure": "Sécurisé",
+      "secureDesc": "Vos données sont protégées"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "Email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "noAccount": "Pas de compte ?",
+      "signUp": "S'inscrire",
+      "error": "Email ou mot de passe incorrect"
+    },
+    "register": {
+      "title": "Inscription",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "userType": "Type d'utilisateur",
+      "farmer": "Agriculteur",
+      "collector": "Collecteur",
+      "region": "Région",
+      "commune": "Commune",
+      "submit": "S'inscrire",
+      "hasAccount": "Déjà un compte ?",
+      "signIn": "Se connecter",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "overview": "Aperçu",
+    "myOffers": "Mes Offres",
+    "myDemands": "Mes Demandes",
+    "matches": "Matches",
+    "chat": "Messages",
+    "profile": "Profil",
+    "marketplace": "Marché",
+    "notifications": "Notifications",
+    "logout": "Déconnexion"
+  },
+  "offers": {
+    "title": "Offres",
+    "create": "Créer une offre",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "product": "Produit",
+    "quantity": "Quantité",
+    "price": "Prix unitaire",
+    "quality": "Qualité",
+    "description": "Description",
+    "location": "Localisation",
+    "status": "Statut",
+    "active": "Active",
+    "reserved": "Réservée",
+    "sold": "Vendue",
+    "image": "Image"
+  },
+  "chat": {
+    "title": "Messages",
+    "typeMessage": "Tapez un message...",
+    "send": "Envoyer",
+    "noConversations": "Aucune conversation",
+    "unread": "Non lu"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "search": "Rechercher...",
+    "all": "Toutes"
+  },
+  "admin": {
+    "title": "Administration",
+    "dashboard": "Tableau de Bord Admin",
+    "users": "Gestion Utilisateurs",
+    "usersDesc": "Activer/Désactiver des comptes",
+    "products": "Catalogue Produits",
+    "productsDesc": "Produits, catégories et unités",
+    "stats": "Statistiques",
+    "exports": "Rapports & Exports",
+    "exporting": "Préparation de l'export...",
+    "userSearch": "Rechercher par nom ou email...",
+    "noUsers": "Aucun utilisateur trouvé",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "purchases": {
+    "received": "Achats Reçus",
+    "sent": "Mes Achats",
+    "none": "Aucune transaction trouvée.",
+    "status": {
+      "pending": "En attente",
+      "accepted": "Accepté",
+      "rejected": "Refusé",
+      "cancelled": "Annulé"
+    },
+    "offer": "OFFRE #",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "confirmSuccess": "Commande mise à jour !"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "none": "Aucune notification",
+    "markAllRead": "Tout marquer comme lu",
+    "unreadCount": "unread notifications"
+  },
+  "profile": {
+    "information": "Informations",
+    "edit": "Modifier mon profil",
+    "advanced": {
+      "farmer": "Mes Cultures",
+      "collector": "Mes Zones"
+    },
+    "memberSince": "Membre depuis",
+    "accountType": "Type de compte",
+    "adminSpace": "Espace Administration"
+  }
+}

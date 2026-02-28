@@ -1,0 +1,29 @@
+# docker-compose.yml
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: agric_user
+      POSTGRES_PASSWORD: agric_password
+      POSTGRES_DB: agriculture_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://agric_user:agric_password@postgres:5432/agriculture_db
+      SECRET_KEY: votre_cle_secrete_local
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+
+volumes:
+  postgres_data:
