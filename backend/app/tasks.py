@@ -30,7 +30,7 @@ def find_matches_for_demand_task(demand_id: int):
         demand = db.query(Demand).filter(Demand.id == demand_id).first()
         if demand:
             matching.find_matches_for_demand(db, demand)
-            # find_matches_for_demand already commits
+            db.commit()
     except Exception as e:
         print(f"Error in background matching task (demand): {e}")
         db.rollback()
@@ -46,7 +46,7 @@ def find_matches_for_offer_task(offer_id: int):
         offer = db.query(Offer).filter(Offer.id == offer_id).first()
         if offer:
             matching.find_matches_for_offer(db, offer)
-            # find_matches_for_offer already commits
+            db.commit()
     except Exception as e:
         print(f"Error in background matching task (offer): {e}")
         db.rollback()

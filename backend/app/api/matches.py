@@ -143,6 +143,11 @@ def update_match_status(
     if not is_owner:
         raise HTTPException(status_code=403, detail="Not authorized")
     
+    # If status is already what we want, return early
+    if (status_update.status == "accepted" and match.status == match_model.MatchStatus.ACCEPTED) or \
+       (status_update.status == "rejected" and match.status == match_model.MatchStatus.REJECTED):
+        return {"status": status_update.status}
+
     # Update status
     if status_update.status == "accepted":
         match.status = match_model.MatchStatus.ACCEPTED
@@ -182,6 +187,9 @@ def accept_match(
     if not is_owner:
         raise HTTPException(status_code=403, detail="Not authorized")
         
+    if match.status == match_model.MatchStatus.ACCEPTED:
+        return {"status": "accepted"}
+        
     match.status = match_model.MatchStatus.ACCEPTED
     msg = f"{current_user.full_name} a accepté votre match pour {match.offer.product.name}!"
     background_tasks.add_task(send_notification_task, other_user.id, msg, "success")
@@ -211,6 +219,9 @@ def reject_match(
         
     if not is_owner:
         raise HTTPException(status_code=403, detail="Not authorized")
+        
+    if match.status == match_model.MatchStatus.REJECTED:
+        return {"status": "rejected"}
         
     match.status = match_model.MatchStatus.REJECTED
     msg = f"{current_user.full_name} a décliné le match pour {match.offer.product.name}."

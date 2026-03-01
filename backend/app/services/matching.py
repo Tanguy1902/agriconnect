@@ -83,7 +83,6 @@ def find_matches_for_demand(db: Session, demand: Demand) -> List[Match]:
     Finds matching offers for a newly created demand.
     """
     matches = []
-
     # 1. Identify the product to match against
     target_product_id = demand.product_id
     target_product_name = demand.product_name
@@ -102,6 +101,7 @@ def find_matches_for_demand(db: Session, demand: Demand) -> List[Match]:
         return []
 
     potential_offers = query.all()
+    notified_farmers = set()
 
     for offer in potential_offers:
         score, reason, is_valid = calculate_match_score(offer, demand)
@@ -118,15 +118,17 @@ def find_matches_for_demand(db: Session, demand: Demand) -> List[Match]:
         )
         db.add(match)
         matches.append(match)
-        # Notify Farmer
-        notify_user(
-            db,
-            offer.farmer,
-            f"Nouvelle demande trouvée pour votre offre de {offer.product.name}!",
-            "info"
-        )
-    db.commit()
-
+        
+        # Notify Farmer (only once per matching session)
+        if offer.farmer_id not in notified_farmers:
+            notify_user(
+                db,
+                offer.farmer,
+                f"Nouvelle demande trouvée pour votre offre de {offer.product.name}!",
+                "info"
+            )
+            notified_farmers.add(offer.farmer_id)
+    
     # Notify Collector if matches found
     if matches:
         notify_user(
@@ -135,7 +137,8 @@ def find_matches_for_demand(db: Session, demand: Demand) -> List[Match]:
             f"Trouvé {len(matches)} offre(s) correspondant à votre demande!",
             "success"
         )
-
+    
+    db.commit()
     return matches
 
 
@@ -144,9 +147,7 @@ def find_matches_for_offer(db: Session, offer: Offer) -> List[Match]:
     Finds matching demands for a newly created offer.
     """
     matches = []
-
     query = db.query(Demand).filter(Demand.status == "active")
-
     product_name = offer.product.name
     from sqlalchemy import or_
 
@@ -157,6 +158,7 @@ def find_matches_for_offer(db: Session, offer: Offer) -> List[Match]:
         )
     )
     potential_demands = query.all()
+    notified_collectors = set()
 
     for demand in potential_demands:
         score, reason, is_valid = calculate_match_score(offer, demand)
@@ -174,14 +176,16 @@ def find_matches_for_offer(db: Session, offer: Offer) -> List[Match]:
         db.add(match)
         matches.append(match)
 
-        # Notify Collector
-        notify_user(
-            db,
-            demand.collector,
-            "Nouvelle offre trouvée pour votre demande!",
-            "info"
-        )
-    db.commit()
+        # Notify Collector (only once per matching session)
+        if demand.collector_id not in notified_collectors:
+            notify_user(
+                db,
+                demand.collector,
+                "Nouvelle offre trouvée pour votre demande!",
+                "info"
+            )
+            notified_collectors.add(demand.collector_id)
+            
     # Notify Farmer if matches found
     if matches:
         notify_user(
@@ -190,5 +194,6 @@ def find_matches_for_offer(db: Session, offer: Offer) -> List[Match]:
             f"Trouvé {len(matches)} demande(s) correspondant à votre offre!",
             "success"
         )
-
+    
+    db.commit()
     return matches

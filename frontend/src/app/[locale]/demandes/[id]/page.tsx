@@ -205,7 +205,7 @@ export default function DemandDetailPage() {
                   Date de livraison souhaitée
                 </h3>
                 <p className="text-foreground/80">
-                  {new Date(demand.desired_delivery_date).toLocaleDateString('fr-FR')}
+                  {parseBackendDate(demand.desired_delivery_date).toLocaleDateString('fr-FR')}
                 </p>
               </div>
             )}

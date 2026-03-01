@@ -166,7 +166,7 @@ export default function CollectorDemandsPage() {
                     <div className="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
                       <p className="text-xs text-foreground/60 mb-1">{t('deliveryDate')}</p>
                       <p className="text-sm font-medium text-foreground">
-                        {new Date(demand.desired_delivery_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'fr-FR')}
+                        {parseBackendDate(demand.desired_delivery_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'fr-FR')}
                       </p>
                     </div>
                   )}

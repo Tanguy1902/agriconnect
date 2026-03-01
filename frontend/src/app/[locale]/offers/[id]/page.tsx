@@ -247,7 +247,7 @@ export default function OfferDetailPage() {
                     Date de récolte
                   </h3>
                   <p className="text-foreground/80">
-                    {new Date(offer.harvest_date).toLocaleDateString('fr-FR')}
+                    {parseBackendDate(offer.harvest_date).toLocaleDateString('fr-FR')}
                   </p>
                 </div>
               )}

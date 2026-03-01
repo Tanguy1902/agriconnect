@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Link } from '@/i18n/routing';
 import api from '@/lib/api';
 import MatchesList from '@/components/dashboard/MatchesList';
+import { parseBackendDate } from '@/utils/dateUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faList, 
@@ -96,7 +97,7 @@ export default function CollectorDashboard() {
             { label: t('stats.newOffers'), value: newOffersCount, color: 'text-orange-600', bg: 'bg-orange-100/50', icon: faShoppingCart },
             { label: t('stats.monthlyExpenses'), value: `${monthlyExpenses.toLocaleString()} Ar`, color: 'text-slate-900 dark:text-white', bg: 'bg-slate-100 dark:bg-slate-800', icon: faMoneyBillWave },
           ].map((stat, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800/50 hover:shadow-xl transition-all duration-300 group">
+            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:shadow-xl transition-all duration-300 group">
               <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">{stat.label}</h3>
               <div className="flex items-end justify-between">
                 <p className={`text-4xl font-black ${stat.color}`}>{stat.value}</p>
@@ -116,7 +117,9 @@ export default function CollectorDashboard() {
               <Link href="/dashboard/collecteur/matches" className="text-sm font-bold text-primary hover:underline">{t('matches.viewAll')}</Link>
             </div>
             <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-2 shadow-sm border border-slate-100 dark:border-slate-800/50">
-              <MatchesList userType="collecteur" />
+              <div className="max-h-[680px] overflow-y-auto pr-2 custom-scrollbar">
+                <MatchesList userType="collecteur" />
+              </div>
             </div>
           </div>
 
@@ -159,7 +162,7 @@ export default function CollectorDashboard() {
                         </div>
                         <div className="text-right">
                           <p className="text-[10px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">
-                            {new Date(demand.created_at).toLocaleDateString()}
+                            {parseBackendDate(demand.created_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>

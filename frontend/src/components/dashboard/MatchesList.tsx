@@ -89,7 +89,7 @@ export default function MatchesList({ userType }: { userType: 'agriculteur' | 'c
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 p-2 pb-6">
       {matches.map((match) => (
         <div key={match.id} className="group bg-white dark:bg-slate-900 p-6 rounded-4xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:shadow-xl transition-all duration-300">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
@@ -105,8 +105,8 @@ export default function MatchesList({ userType }: { userType: 'agriculteur' | 'c
               <div>
                 <h3 className="text-lg font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                   {userType === 'agriculteur' 
-                    ? t('demandFor', { product: match.demand?.product_name }) 
-                    : t('offerFor', { product: match.offer?.product_name })
+                    ? t('demandFor', { product: match.demand?.product_name || '' }) 
+                    : t('offerFor', { product: match.offer?.product_name || '' })
                   }
                 </h3>
                 <div className="flex items-center gap-2 mt-1">

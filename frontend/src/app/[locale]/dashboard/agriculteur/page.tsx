@@ -64,7 +64,7 @@ export default function FarmerDashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              {t('welcome', { name: user?.full_name })}
+              {t('welcome', { name: user?.full_name || '' })}
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1">{t('subtitle')}</p>
           </div>
@@ -84,7 +84,7 @@ export default function FarmerDashboard() {
             { label: t('stats.activeOrders'), value: activeOrdersCount, color: 'text-amber-600', bg: 'bg-amber-100/50' },
             { label: t('stats.monthlyRevenue'), value: `${monthlyRevenue.toLocaleString()} Ar`, color: 'text-slate-900 dark:text-white', bg: 'bg-slate-100 dark:bg-slate-800' },
           ].map((stat, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800/50 hover:shadow-xl transition-all duration-300 group">
+            <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-4xl shadow-sm border border-slate-100 dark:border-slate-800/50 hover:shadow-xl transition-all duration-300 group">
               <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">{stat.label}</h3>
               <div className="flex items-end justify-between">
                 <p className={`text-4xl font-black ${stat.color}`}>{stat.value}</p>
@@ -104,7 +104,9 @@ export default function FarmerDashboard() {
               <Link href="/dashboard/agriculteur/matches" className="text-sm font-bold text-primary hover:underline">{t('matches.viewAll')}</Link>
             </div>
             <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-2 shadow-sm border border-slate-100 dark:border-slate-800/50">
-              <MatchesList userType="agriculteur" />
+              <div className="max-h-[680px] overflow-y-auto pr-2 custom-scrollbar">
+                <MatchesList userType="agriculteur" />
+              </div>
             </div>
           </div>
 
